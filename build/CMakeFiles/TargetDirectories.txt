@@ -1,0 +1,3 @@
+/Users/williambland/code/GameEngine/build/CMakeFiles/GameEngine.dir
+/Users/williambland/code/GameEngine/build/CMakeFiles/edit_cache.dir
+/Users/williambland/code/GameEngine/build/CMakeFiles/rebuild_cache.dir
