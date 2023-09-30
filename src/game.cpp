@@ -1,4 +1,5 @@
 #include <game.h>
+#include <texture_manager.h>
 
 
 SDL_Renderer* Game::renderer = nullptr;
@@ -35,9 +36,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     } else {
         isRunning = false;
     }
-    SDL_Surface* tempSurface = IMG_Load("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp");
-    playerTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
-    SDL_FreeSurface(tempSurface);
+
+    playerTexture = TextureManager::LoadTexture("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp", renderer);
 }
 
 void Game::handleEvents(){
@@ -73,7 +73,6 @@ void Game::update() {
     int scale = 2;
     destinationRect.h = 32 * scale;
     destinationRect.w = 32 * scale;
-    std::cout << destinationRect.x << std::endl;
     return;
 }
 
