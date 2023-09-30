@@ -1,12 +1,12 @@
 #include <game.h>
+#include <game_object.h>
 #include <texture_manager.h>
 
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
-SDL_Texture* playerTexture;
-SDL_Rect sourceRect, destinationRect;
+GameObject* playerObject;
 
 Game::Game(){}
 Game::~Game(){}
@@ -37,7 +37,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    playerTexture = TextureManager::LoadTexture("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp", renderer);
+     playerObject = new GameObject("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp", renderer);
 }
 
 void Game::handleEvents(){
@@ -50,16 +50,16 @@ void Game::handleEvents(){
         case SDL_KEYDOWN:
             switch(event.key.keysym.sym) {
                 case SDLK_LEFT:
-                    destinationRect.x -= speed;
+                    playerObject->xPos -= speed;
                     break;
                 case SDLK_RIGHT:
-                    destinationRect.x += speed;
+                    playerObject->xPos += speed;
                     break;
                 case SDLK_UP:
-                    destinationRect.y -= speed;
+                    playerObject->yPos -= speed;
                     break;
                 case SDLK_DOWN:
-                    destinationRect.y += speed;
+                    playerObject->yPos += speed;
                     break;
                 default:
                     break;
@@ -70,15 +70,14 @@ void Game::handleEvents(){
 }
 
 void Game::update() {
-    int scale = 2;
-    destinationRect.h = 32 * scale;
-    destinationRect.w = 32 * scale;
+    playerObject->update();
+    std::cout << playerObject->xPos << ", " << playerObject->yPos << std::endl;
     return;
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, playerTexture, NULL, &destinationRect);
+    playerObject->render();
     SDL_RenderPresent(renderer);
 
 }
