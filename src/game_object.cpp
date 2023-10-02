@@ -2,11 +2,11 @@
 #include "texture_manager.h"
 
 
-GameObject::GameObject(const char* textureSheetFile, SDL_Renderer* ren) {
+GameObject::GameObject(const char* textureSheetFile, SDL_Renderer* ren, int x, int y) {
     renderer = ren;
     objectTexture = TextureManager::LoadTexture(textureSheetFile, ren);
-    xPos = 0;
-    yPos = 0;
+    xPos = x;
+    yPos = y;
 
 }
 

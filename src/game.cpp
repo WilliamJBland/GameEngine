@@ -7,6 +7,7 @@ SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 GameObject* playerObject;
+GameObject* player2Object;
 
 Game::Game(){}
 Game::~Game(){}
@@ -14,6 +15,7 @@ Game::~Game(){}
 
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
     int flags = 0;
+    std::vector<GameObject*> liveGameObjects = {};
     if (fullscreen) {
         flags = SDL_WINDOW_FULLSCREEN;
     }
@@ -38,6 +40,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     }
 
      playerObject = new GameObject("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp", renderer);
+     player2Object = new GameObject("/Users/williambland/code/GameEngine/assets/ElfIdle.xcf", renderer, 68, 68);
+     this->addGameObject(playerObject);
+     this->addGameObject(player2Object);
 }
 
 void Game::handleEvents(){
@@ -70,14 +75,20 @@ void Game::handleEvents(){
 }
 
 void Game::update() {
-    playerObject->update();
+    for (auto gameObject : liveGameObjects) {
+        gameObject->update();
+        std::cout << liveGameObjects.size() << std::endl;
+    }
     std::cout << playerObject->xPos << ", " << playerObject->yPos << std::endl;
     return;
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
-    playerObject->render();
+    for (auto gameObject : liveGameObjects) {
+        gameObject->render();
+        std::cout << liveGameObjects.size() << std::endl;
+    }
     SDL_RenderPresent(renderer);
 
 }
@@ -86,4 +97,8 @@ void Game::clean() {
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
     std::cout << "Game Cleaned" << std::endl;
+}
+
+void Game::addGameObject(GameObject* gameObject) {
+    liveGameObjects.push_back(gameObject);
 }

@@ -1,6 +1,8 @@
 #include "SDL2/SDL.h"
 #include "SDL2_Image/SDL_Image.h"
 #include <iostream>
+#include <vector>
+#include <game_object.h>
 
 
 class Game {
@@ -14,6 +16,7 @@ class Game {
         bool running(){return isRunning; };
         void render();
         void clean();
+        void addGameObject(GameObject* gameObject);
 
         // static void addTile(int id, int x, int y);
         static SDL_Renderer *renderer;
@@ -24,4 +27,5 @@ class Game {
         bool isRunning;
         int cnt;
         SDL_Window *window;
+        std::vector<GameObject*> liveGameObjects;
 };
