@@ -1,6 +1,7 @@
 #include <game.h>
-#include <game_object.h>
 #include <texture_manager.h>
+#include <map.h>
+
 
 
 SDL_Renderer* Game::renderer = nullptr;
@@ -8,6 +9,8 @@ SDL_Event Game::event;
 
 GameObject* playerObject;
 GameObject* player2Object;
+
+Map* map;
 
 Game::Game(){}
 Game::~Game(){}
@@ -39,8 +42,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-     playerObject = new GameObject("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp", renderer);
-     player2Object = new GameObject("/Users/williambland/code/GameEngine/assets/ElfIdle.xcf", renderer, 68, 68);
+     playerObject = new GameObject("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp");
+     player2Object = new GameObject("/Users/williambland/code/GameEngine/assets/ElfIdle.xcf", 68, 68);
+     map = new Map();
      this->addGameObject(playerObject);
      this->addGameObject(player2Object);
 }
@@ -61,9 +65,11 @@ void Game::handleEvents(){
                     playerObject->xPos += speed;
                     break;
                 case SDLK_UP:
+                    playerObject->setSprite("/Users/williambland/code/GameEngine/assets/WizardIdleBack.bmp");
                     playerObject->yPos -= speed;
                     break;
                 case SDLK_DOWN:
+                    playerObject->setSprite("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp");
                     playerObject->yPos += speed;
                     break;
                 default:
@@ -77,17 +83,15 @@ void Game::handleEvents(){
 void Game::update() {
     for (auto gameObject : liveGameObjects) {
         gameObject->update();
-        std::cout << liveGameObjects.size() << std::endl;
     }
-    std::cout << playerObject->xPos << ", " << playerObject->yPos << std::endl;
     return;
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
+    map->drawMap();
     for (auto gameObject : liveGameObjects) {
         gameObject->render();
-        std::cout << liveGameObjects.size() << std::endl;
     }
     SDL_RenderPresent(renderer);
 

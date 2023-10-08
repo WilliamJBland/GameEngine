@@ -1,3 +1,5 @@
+#pragma once
+
 #include "SDL2/SDL.h"
 #include "SDL2_Image/SDL_Image.h"
 #include <iostream>
