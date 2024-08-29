@@ -1,11 +1,28 @@
 #include <game.h>
+#include <texture_manager.h>
+#include <map.h>
+#include <ecs/components.h>
+#include <ecs/keyboard_controller.h>
+#include <collision.h>
+#include <asset_manager.h>
 
+
+
+Map* map;
+EntityManager manager;
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
-SDL_Texture* playerTexture;
-SDL_Rect sourceRect, destinationRect;
+SDL_Rect Game::camera = {0, 0, 800, 640};
+
+AssetManager* Game::assets = new AssetManager(&manager);
+bool Game::isRunning = false;
+
+
+// This is syntax for creating a variable player and assigning it to the entity returned by addEntitye
+auto& player(manager.addEntity());
+
 
 Game::Game(){}
 Game::~Game(){}
@@ -13,6 +30,7 @@ Game::~Game(){}
 
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
     int flags = 0;
+    std::vector<GameObject*> liveGameObjects = {};
     if (fullscreen) {
         flags = SDL_WINDOW_FULLSCREEN;
     }
@@ -35,10 +53,29 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     } else {
         isRunning = false;
     }
-    SDL_Surface* tempSurface = IMG_Load("/Users/williambland/code/GameEngine/assets/WizardIdle.bmp");
-    playerTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
-    SDL_FreeSurface(tempSurface);
+
+
+    assets->addTexture("terrain", "../assets/terrain.xcf");
+    assets->addTexture("player", "../assets/WizardSpriteSheetNew.xcf");
+    assets->addTexture("projectile", "../assets/WizardFire.xcf");
+
+
+    map = new Map("terrain", 2, 32);
+    map->loadMap("../assets/lvl1_16x16.txt", 22, 16);
+
+    player.addComponent<TransformComponent>(500, 600, 2);
+    player.addComponent<SpriteComponent>("player", true);
+    player.addComponent<KeyboardController>();
+    player.addComponent<ColliderComponent>("player");
+    player.addGroup(groupPlayers);
+
+
 }
+
+auto& tiles(manager.getGroup(Game::groupMap));
+auto& players(manager.getGroup(Game::groupPlayers));
+auto& colliders(manager.getGroup(Game::groupColliders));
+auto& projectiles(manager.getGroup(Game::groupProjectiles));
 
 void Game::handleEvents(){
     SDL_PollEvent(&event);
@@ -47,39 +84,78 @@ void Game::handleEvents(){
         case SDL_QUIT:
             isRunning = false;
             break;
-        case SDL_KEYDOWN:
-            switch(event.key.keysym.sym) {
-                case SDLK_LEFT:
-                    destinationRect.x -= speed;
-                    break;
-                case SDLK_RIGHT:
-                    destinationRect.x += speed;
-                    break;
-                case SDLK_UP:
-                    destinationRect.y -= speed;
-                    break;
-                case SDLK_DOWN:
-                    destinationRect.y += speed;
-                    break;
-                default:
-                    break;
-            }
         default:
             break;
     }
 }
 
 void Game::update() {
-    int scale = 2;
-    destinationRect.h = 32 * scale;
-    destinationRect.w = 32 * scale;
-    std::cout << destinationRect.x << std::endl;
-    return;
+
+    SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+    Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
+
+    manager.refresh();
+    manager.update();
+
+    for (auto& c : colliders)
+    {
+        SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+        if (Collision::AABB(cCol, playerCol))
+        {
+            player.getComponent<TransformComponent>().position = playerPos;
+        }
+    }
+    for (auto& p : projectiles)
+    {
+        if (Collision::AABB(player.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+        {
+            std::cout << "Hit player" << std::endl;
+            // p->destroy();
+        }
+    }
+    camera.x = player.getComponent<TransformComponent>().position.x - 300;
+    camera.y = player.getComponent<TransformComponent>().position.y - 250;
+
+    if (camera.x < 0)
+    {
+        camera.x = 0;
+    }
+    if (camera.y < 0)
+    {
+        camera.y = 0;
+    }
+    if (camera.x > camera.w)
+    {
+        camera.x = camera.w;
+    }
+    if (camera.y > camera.h)
+    {
+        camera.y = camera.h;
+    }
 }
+
 
 void Game::render() {
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, playerTexture, NULL, &destinationRect);
+    for (auto& t : tiles)
+    {
+        t->draw();
+    }
+    for (auto& c : colliders)
+    {
+        c->draw();
+    }
+    for (auto& p : players)
+    {
+        p->draw();
+    }
+    for (auto& p : projectiles)
+    {
+        p->draw();
+    }
+
+
     SDL_RenderPresent(renderer);
 
 }

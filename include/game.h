@@ -1,6 +1,16 @@
-#include "SDL2/SDL.h"
-#include "SDL2_Image/SDL_Image.h"
+#pragma once
+
+#include "SDL.h"
+#include "SDL_Image.h"
 #include <iostream>
+#include <vector>
+#include <game_object.h>
+
+
+
+class AssetManager;
+class ColliderComponent;
+
 
 
 class Game {
@@ -15,13 +25,23 @@ class Game {
         void render();
         void clean();
 
-        // static void addTile(int id, int x, int y);
         static SDL_Renderer *renderer;
         static SDL_Event event;
-        // static std::vector<ColliderComponent*> colliders;
-    
+
+        static bool isRunning;
+        static SDL_Rect camera;
+        static AssetManager* assets;
+
+        enum groupLabels : std::size_t
+            {
+                groupMap,
+                groupPlayers,
+                groupColliders,
+                groupProjectiles
+            };
+
     private:
-        bool isRunning;
         int cnt;
         SDL_Window *window;
+        std::vector<GameObject*> liveGameObjects;
 };
