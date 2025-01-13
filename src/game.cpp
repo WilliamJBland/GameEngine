@@ -108,11 +108,10 @@ void Game::update() {
     }
     for (auto& p : projectiles)
     {
-        if (Collision::AABB(player.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
-        {
-            std::cout << "Hit player" << std::endl;
-            // p->destroy();
-        }
+        // if (Collision::AABB(player.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+        // {
+        //     std::cout << "Hit player" << std::endl;
+        // }
     }
     camera.x = player.getComponent<TransformComponent>().position.x - 300;
     camera.y = player.getComponent<TransformComponent>().position.y - 250;

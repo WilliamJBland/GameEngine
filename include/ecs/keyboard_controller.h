@@ -41,8 +41,8 @@ class KeyboardController : public Component
                         break;
                     case SDLK_f:
                         sprite->play("Power");
-                            Game::assets->createProjectile(Vector2D(transform->position.x, transform->position.y), Vector2D(1, 0), 10, 0, "projectile", 2);
-                            Game::assets->createProjectile(Vector2D(transform->position.x, transform->position.y), Vector2D(-1, 0), 10, 0, "projectile", 2);
+                            Game::assets->createProjectile(Vector2D(transform->position.x, transform->position.y), Vector2D(2, 0), 80, "projectile", 2);
+                            // Game::assets->createProjectile(Vector2D(transform->position.x, transform->position.y), Vector2D(-1, 0), 10, 0, "projectile", 2);
                             // Game::assets->createProjectile(Vector2D(transform->position.x, transform->position.y), Vector2D(0, 1), 10, 0, "projectile", 2);
                             // Game::assets->createProjectile(Vector2D(transform->position.x, transform->position.y), Vector2D(0, -1), 10, 0, "projectile", 2);
                             // Game::assets->createProjectile(Vector2D(transform->position.x, transform->position.y), Vector2D(0, -1), 10, 0, "projectile", 2);

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cmath>
 
 class Vector2D
 {
@@ -27,6 +28,7 @@ class Vector2D
 
         Vector2D& operator*(const int& i);
         void zero();
+        int absolute() {return pow(pow(x, 2) + pow(y, 2), 0.5);};
 
         friend std::ostream& operator<<(std::ostream& stream, const Vector2D& vec);
 };

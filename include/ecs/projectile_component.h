@@ -10,7 +10,9 @@
 class ProjectileComponent : public Component
 {
     public:
-        ProjectileComponent(int rng, int spd, Vector2D vel) : range(rng), speed(spd), velocity(vel) {}
+    // This makes you pass a scalar speed and a velocity but does not enforce sensible values. The distance is then calculated from 
+    // the speed which could be 0 whilst the velocity > 0
+        ProjectileComponent(int rng, Vector2D vel) : range(rng), speed(vel.absolute()), velocity(vel) {}
         ~ProjectileComponent() {}
 
         void init() override 
@@ -21,7 +23,6 @@ class ProjectileComponent : public Component
         void update() override 
         {
             distance += speed;
-
             if (distance > range) {
                 entity->destroy();
             }

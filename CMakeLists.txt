@@ -30,6 +30,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE include)
 # Add SDL2 library
 find_package(SDL2 REQUIRED)
 find_package(SDL2_Image REQUIRED)
+# find_package(SDL_ttf REQUIRED)
 
 
 # # # # Add SDL2_image library
@@ -37,6 +38,7 @@ find_package(SDL2_Image REQUIRED)
 target_include_directories(${PROJECT_NAME} 
     PUBLIC ${SDL2_IMAGE_LIBRARIES}
     PUBLIC ${SDL2_LIBRARIES}
+
     )
 
 target_link_libraries(GameEngine PUBLIC ${SDL2_LIBRARIES} SDL2_image::SDL2_image)
